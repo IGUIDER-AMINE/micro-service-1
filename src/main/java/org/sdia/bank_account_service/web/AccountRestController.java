@@ -1,17 +1,27 @@
 package org.sdia.bank_account_service.web;
 
+import org.sdia.bank_account_service.dto.BankAccountRequestDTO;
+import org.sdia.bank_account_service.dto.BankAccountResponseDTO;
 import org.sdia.bank_account_service.entities.BankAccount;
+import org.sdia.bank_account_service.mappers.AccountMapper;
 import org.sdia.bank_account_service.repositories.BankAccountRepository;
+import org.sdia.bank_account_service.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
+@RequestMapping("/api")
 public class AccountRestController {
     private BankAccountRepository bankAccountRepository;
-    public AccountRestController(BankAccountRepository bankAccountRepository) {
+    private AccountService accountService;
+    private AccountMapper accountMapper;
+    public AccountRestController(BankAccountRepository bankAccountRepository, AccountService accountService, AccountMapper accountMapper) {
         this.bankAccountRepository = bankAccountRepository;
+        this.accountService = accountService;
+        this.accountMapper = accountMapper;
     }
 
     @GetMapping("/bankAccounts")
@@ -26,8 +36,8 @@ public class AccountRestController {
     }
 
     @PostMapping("/bankAccounts")
-    public BankAccount save(@RequestBody BankAccount bankAccount){
-        return bankAccountRepository.save(bankAccount);
+    public BankAccountResponseDTO save(@RequestBody BankAccountRequestDTO requestDTO){
+        return accountService.addAccount(requestDTO);
     }
 
     //@PatchMapping : modifie que les attributs qui ont été envoyés dnas la requete
